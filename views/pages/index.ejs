@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body class="container">
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+    <h2>Book Reviews</h2>
+    <div class="jumbotron">
+        <div class="input-group mb-3">
+            <!-- <form action="/book-details" method="POST"> -->
+            <input type="text" class="form-control" id="book_name" placeholder="Book Name" aria-label="Book Name" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+              <span class="input-group-text btn btn-primary" type="button" id="button1">Get Details</span>
+            </div>
+            <!-- </form> -->
+          </div>
+          <div class="row">
+              <div class="col-md-4"></div>
+          <div id="book-data" class="row"></div>
+          <div id="book-details" class="col-md-4"></div>
+        </div>
+        <!-- <input type="text" class="form-control"> <button id="button1" type="button" class="btn btn-primary">Get Details</button> -->
+    </div>
+</main>
+
+<footer>
+    <%- include('../partials/footer'); %>
+</footer>
+
+</body>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+    $('#button1').click(function(){
+    console.log('button clicked');
+    if($('#book_name').val() == '') {
+        alert('Enter Book Name');
+        return;
+    }
+    $.post('/book-details', {data: $('#book_name').val()}, function (data) {
+        console.log('response',data);
+        const ress = data.data.items[0];
+        $('#book-data').empty();
+        $('#book-details').empty();
+            //$.each(ress.items,function(index,value) {
+               // console.log('item',value);
+                $('#book-data').append(
+                                    `<div class="col-md-10" style="margin-bottom: 5px;"><div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="`+ress.volumeInfo.imageLinks.smallThumbnail+`" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">`+ress.volumeInfo.title+`</h5>
+                        <p class="card-text">`+ ress.volumeInfo.description+`</p>
+                    
+                        <a href="`+ress.volumeInfo.previewLink+`" target="_blank" class="btn btn-primary">See Preview</a>
+                    </div>
+                    </div></div>`  );
+$('#book-details').append(`<div class="col-md-10" style="margin-botton: 5px;padding-top: 100px;font-weight:bold;">
+    <p>Average Rating: `+ress.volumeInfo.averageRating+ `</p>
+    <p>No. Of Reviews: `+ress.volumeInfo.ratingsCount+`</p></div>`);
+            //})
+         
+      });
+});
+</script>
+</html>
